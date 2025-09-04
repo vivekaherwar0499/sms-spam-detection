@@ -1,18 +1,24 @@
 import nltk
-nltk.data.path.append("nltk_data") 
-nltk.download('punkt', download_dir='nltk_data')
-nltk.download('stopwords', download_dir='nltk_data')
-
+import os
 import streamlit as st
 import pickle
 import string
-
-# Download required NLTK data
-nltk.download('punkt')
-nltk.download('stopwords')
-
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
+
+# ---------------- NLTK Setup for Streamlit Cloud ----------------
+# Create a folder in current working directory to store nltk data
+nltk_data_path = os.path.join(os.getcwd(), "nltk_data")
+if not os.path.exists(nltk_data_path):
+    os.mkdir(nltk_data_path)
+
+# Tell nltk to look here
+nltk.data.path.append(nltk_data_path)
+
+# Download required NLTK data into this folder
+nltk.download('punkt', download_dir=nltk_data_path)
+nltk.download('stopwords', download_dir=nltk_data_path)
+# -----------------------------------------------------------------
 
 # Initialize stemmer
 ps = PorterStemmer()
@@ -29,7 +35,7 @@ def preprocess_text(text):
     words = [ps.stem(w) for w in words if w not in stopwords.words('english')]
     return " ".join(words)
 
-# Streamlit App
+# ---------------- Streamlit App ----------------
 st.title("📱 SMS Spam Detection App")
 
 user_input = st.text_area("Enter an SMS message:")
